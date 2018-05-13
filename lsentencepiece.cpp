@@ -32,8 +32,8 @@ int l_SentencePieceProcessor_new(lua_State* L) {
 	lua_setmetatable(L, -2);  
 
 	*spptr = new sentencepiece::SentencePieceProcessor();
-
-	if (!(*spptr)->Load(filename)) {
+	const sentencepiece::util::Status status = (*spptr)->Load(filename);	
+	if (!status.ok()) {
 		lua_pushnil(L);
 		lua_pushstring(L, "ERROR: CANNOT OPEN SENTENCEPIECE MODEL");
 		return 2;
