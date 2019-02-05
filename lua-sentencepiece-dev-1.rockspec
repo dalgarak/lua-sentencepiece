@@ -24,7 +24,7 @@ build = {
   type = "make",
   build_variables = {
     CFLAGS="$(CFLAGS) -std=c++11 -I$(LUA_INCDIR) -I$(SENTPIECE_INCDIR)",
-    LDFLAGS="$(LIBFLAG) -lsentencepiece"
+    LDFLAGS="$(LIBFLAG) -L$(SENTPIECE_LIBDIR) -lsentencepiece"
   },
   install_variables = {
     INST_PREFIX="$(PREFIX)",
