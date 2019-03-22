@@ -1,4 +1,6 @@
-CXXFLAGS := $(CFLAGS)
+CFLAGS := $(CFLAGS) -std=c++11
+CXXFLAGS := $(CFLAGS) 
+LDFLAGS := $(LDFLAGS) -lsentencepiece
 
 all: clean SentencePieceProcessor.so
 
@@ -14,5 +16,5 @@ clean:
 	rm -f test
 
 test: clean
-	$(CXX) -Wall -D__TEST_LUA_SENTPIECE -std=c++11 -o $@ ./lsentencepiece.cpp -lsentencepiece -I/home/jhshin/Works/sentencepiece/src -I/home/jhshin/torch/install/include -I/usr/include/c++/5 -L/home/jhshin/torch/install/lib -lluajit 
+	$(CXX) -Wall -D__TEST_LUA_SENTPIECE -std=c++11 -o $@ ./lsentencepiece.cpp -lsentencepiece -I/usr/local/include -I/home/jhshin/torch51/install/include -I/usr/include/c++/5 -L/home/jhshin/torch51/install/lib -lluajit $(LDFLAGS)
 	

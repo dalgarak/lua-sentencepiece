@@ -1,6 +1,6 @@
 -- spp_test.lua
 --
-
+local SentencePieceProcessor = require('SentencePieceProcessor')
 local spp = SentencePieceProcessor.new("./sample.model/wordpiece_ko.model")
 
 print ('Test 1: Simple Encode-Decode Test')
@@ -22,3 +22,5 @@ spp:decodeExtraOptions("reverse");
 
 reverted = spp:decode(pieces)
 print ('Decoded: ' .. reverted)
+
+

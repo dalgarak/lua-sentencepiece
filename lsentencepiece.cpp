@@ -15,6 +15,13 @@ extern "C"
 
 #define LSPP_INSTANCE	"luaL_SentencePieceProcessor"
 
+#if LUA_VERSION_NUM < 502
+  #define luaL_newlibtable(L,l) lua_createtable(L,0,sizeof(l)/sizeof((l)[0]))
+  #define luaL_newlib(L,l) (luaL_newlibtable(L,l),luaL_register(L,NULL,l))
+  #define luaL_setfuncs(L,l,nups) luaL_register(L,NULL,l)
+  #define lua_pushunsigned(L,val) lua_pushinteger(L,val)
+#endif
+
 using namespace std;
 
 static sentencepiece::SentencePieceProcessor* check_spprocessor(lua_State *L, int n)
@@ -120,12 +127,12 @@ int l_SentencePieceProcessor_decodeExtraOptions(lua_State* L)
 	return 0;
 }
 
-static const struct luaL_reg sSentencePieceProcRegs[] = {
+static const struct luaL_Reg sSentencePieceProcRegs[] = {
 	{ "new", l_SentencePieceProcessor_new },
 	{ NULL, NULL }
 };
 
-static const struct luaL_reg sSentencePieceProc_m[] = {
+static const struct luaL_Reg sSentencePieceProc_m[] = {
 	{ "__gc", l_SentencePieceProcessor_destruct },
 	{ "encode", l_SentencePieceProcessor_encode },
 	{ "decode", l_SentencePieceProcessor_decode },
@@ -137,12 +144,12 @@ static const struct luaL_reg sSentencePieceProc_m[] = {
 int luaopen_SentencePieceProcessor(lua_State* L)
 {
 	luaL_newmetatable(L, LSPP_INSTANCE);
+	luaL_setfuncs(L, sSentencePieceProc_m, 0);
 	lua_pushvalue(L, -1);
 	lua_setfield(L, -2, "__index");
-	luaL_register(L, NULL, sSentencePieceProc_m);
 
 	lua_newtable(L);
-	luaL_register(L, NULL, sSentencePieceProcRegs);
+	luaL_newlib(L, sSentencePieceProcRegs);
 
 	return 1;
 }
@@ -156,7 +163,7 @@ int main(int argc, char *argv[])
 	lua_State *l = luaL_newstate();
 	luaL_openlibs(l);
 	luaopen_SentencePieceProcessor(l);
-	lua_setglobal(l, "SentencePieceProcessor");
+	//lua_setglobal(l, "SentencePieceProcessor");
 
 	int erred = luaL_dofile(l, "spp_test.lua");
 	if (erred) {
